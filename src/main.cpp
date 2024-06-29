@@ -51,8 +51,8 @@ struct Map{
         }
         void updateMap(char* map, int width, Player& player, int oldX, int oldY) {
             // Восстанавливаем символ на старой позиции
-            // int oldIndex = oldY * (width) + oldX;
-            // map[oldIndex] = ' ';
+            int oldIndex = oldY * (width) + oldX;
+            map[oldIndex] = ' ';
     
             // Заменяем символ игрока на новой позиции
             int newIndex = player.posY * (width) + player.posX;
