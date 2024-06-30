@@ -6,7 +6,7 @@
 #include <WS2tcpip.h>
 #include <stdio.h>
 #include <vector>
-
+#include "game.h"
 //#pragma comment(lib, "Ws2_32.lib")
 
 class Server
@@ -29,12 +29,7 @@ public:
     struct Command{
         int command_type = 0;
     };
-    struct Player{
-        char playerIcon = 'O';
-        int posX = 0;
-        int posY = 0;
-        bool isAlive = true;
-    };
+
 
 public:
     Server();
@@ -43,8 +38,8 @@ public:
     int start_server();
     int listen_server();
     int accept_clients(SOCKET& socket_client, sockaddr_in& addr_client);
-    int send_client(SOCKET& socket_client, struct Player& command);
-    int recv_client(SOCKET& socket_client, struct Player& command);
+    int send_client(SOCKET& socket_client, struct Game::Player& command);
+    int recv_client(SOCKET& socket_client, struct Game::Player& command);
 
     void close_all();
 };

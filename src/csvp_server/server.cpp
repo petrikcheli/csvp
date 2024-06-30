@@ -76,7 +76,7 @@ int Server::accept_clients(SOCKET& socket_client, sockaddr_in& addr_client)
     return 0;
 }
 
-int Server::send_client(SOCKET& socket_client, struct Player& command)
+int Server::send_client(SOCKET& socket_client, struct Game::Player& command)
 {
     if(send(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to send message to client" << std::endl;
@@ -86,7 +86,7 @@ int Server::send_client(SOCKET& socket_client, struct Player& command)
     return 0;
 }
 
-int Server::recv_client(SOCKET& socket_client, struct Player& command)
+int Server::recv_client(SOCKET& socket_client, struct Game::Player& command)
 {
     if(recv(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to receive message from client" << std::endl;

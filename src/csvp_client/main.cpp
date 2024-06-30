@@ -14,11 +14,6 @@ int main()
     Game::Player enemy;
 
     // ????????????? ??????? ?????? ? ?????
-    player.posX = map.WIDTH / 2;
-    player.posY = 1;
-
-    enemy.posX = map.WIDTH / 2;
-    enemy.posY = map.HEIGHT - 2;
 
     setlocale(LC_ALL, "Rus");
 
@@ -48,17 +43,17 @@ int main()
 
     while(game.isRunning){
 
+        if(client->recv_command(enemy) < 0){
+            delete client;
+            system("pause");
+            return -1;
+        }
+
         if(client->send_command(player) < 0){
             delete client;
             system("pause");
             return -1;
 
-        }
-
-        if(client->recv_command(enemy) < 0){
-            delete client;
-            system("pause");
-            return -1;
         }
 
         int oldX = player.posX;
