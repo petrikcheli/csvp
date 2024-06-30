@@ -9,12 +9,10 @@
 
 //#pragma comment(lib, "Ws2_32.lib")
 
-
-
 class Server
 {
 
-    const char* IP_SERVER = "192.168.31.142";
+    const char* IP_SERVER = "192.168.0.4";
     const int PORT_SERVER = 8000;
     sockaddr_in addr_server;
     SOCKET socket_server;
@@ -31,6 +29,12 @@ public:
     struct Command{
         int command_type = 0;
     };
+    struct Player{
+        char playerIcon = 'O';
+        int posX = 0;
+        int posY = 0;
+        bool isAlive = true;
+    };
 
 public:
     Server();
@@ -39,8 +43,8 @@ public:
     int start_server();
     int listen_server();
     int accept_clients(SOCKET& socket_client, sockaddr_in& addr_client);
-    int send_client(SOCKET& socket_client, struct Command& command);
-    int recv_client(SOCKET& socket_client, struct Command& command);
+    int send_client(SOCKET& socket_client, struct Player& command);
+    int recv_client(SOCKET& socket_client, struct Player& command);
 
     void close_all();
 };

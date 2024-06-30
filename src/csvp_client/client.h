@@ -7,6 +7,7 @@
 //#include <ws2tcpip.h>
 #include <stdio.h>
 #include <vector>
+#include "game.h"
 
 //#pragma comment(lib, "Ws2_32.lib")
 
@@ -14,13 +15,14 @@ class Client
 {
 
     int PORT_SERVER = 8000;
-    const char* IP_SERVER = "192.168.31.142";
+    const char* IP_SERVER = "192.168.0.4";
     SOCKET socket_server;
     sockaddr_in addr_server;
 
 public:
     struct Command{
         int command_type = 0;
+
     };
 
 public:
@@ -28,8 +30,8 @@ public:
     ~Client();
     int start_client();
     int connect_to_server();
-    int send_command(struct Command& command);
-    int recv_command(struct Command& command);
+    int send_command(struct Game::Player& command);
+    int recv_command(struct Game::Player& command);
 
     void close_socket();
 };

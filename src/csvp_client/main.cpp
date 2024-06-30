@@ -1,12 +1,25 @@
 #include <iostream>
 #include "client.h"
 #include <windows.h>
+#include "game.h"
 //#pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
 
 int main()
 {
+    Game game;
+    Game::Player player;
+    Game::Map map;
+    Game::Player enemy;
+
+    // ????????????? ??????? ?????? ? ?????
+    player.posX = map.WIDTH / 2;
+    player.posY = 1;
+
+    enemy.posX = map.WIDTH / 2;
+    enemy.posY = map.HEIGHT - 2;
+
     setlocale(LC_ALL, "Rus");
 
     WSADATA wsaData;
@@ -33,19 +46,37 @@ int main()
         exit(1);
     }
 
-    while(true){
+    while(game.isRunning){
 
-        std::cout << "Eneter the command" << std::endl;
-        std::cin >> command.command_type;
-
-        if(client->send_command(command) < 0){
+        if(client->send_command(player) < 0){
             delete client;
+            system("pause");
+            return -1;
+
+        }
+
+        if(client->recv_command(enemy) < 0){
+            delete client;
+            system("pause");
             return -1;
         }
 
-        if(command.command_type == 2){
-            return 0;
-        }
+        int oldX = player.posX;
+        int oldY = player.posY;
+
+        int oldEnemyX = enemy.posX;
+        int oldEnemyY = enemy.posY;
+
+        game.handleInput(player, map);
+
+        // ?????????? ????? ? ???????
+        map.setCursor(0, 0);
+        map.updateMap(player, oldX, oldY);
+        map.updateMap(enemy, oldEnemyX, oldEnemyY);
+
+        map.display();
+        Sleep(100);
+
     }
 
     delete client;

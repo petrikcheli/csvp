@@ -29,12 +29,12 @@ int Client::start_client()
 
 
 //    if(bind(socket_server, (struct sockaddr *)&addr_server, sizeof(addr_server)) != 0){
-//        std::cout << "Не удалось связять port и ip с socket" << std::endl;
+//        std::cout << "?? ??????? ??????? port ? ip ? socket" << std::endl;
 //        closesocket(socket_server);
 //        WSACleanup();
 //        return -1;
 //    } else {
-//        std::cout << "port и ip связаны с socket" << std::endl;
+//        std::cout << "port ? ip ??????? ? socket" << std::endl;
 //    }
 
     return 0;
@@ -49,7 +49,7 @@ int Client::connect_to_server(){
     return 0;
 }
 
-int Client::send_command(struct Command& command){
+int Client::send_command(struct Game::Player& command){
     if(send(socket_server, (char *)&command, sizeof(command), 0) < 0){
         std::cerr << "Failed to send command to client" << std::endl;
         return -1;
@@ -57,7 +57,7 @@ int Client::send_command(struct Command& command){
     return 0;
 }
 
-int Client::recv_command(struct Command& command){
+int Client::recv_command(struct Game::Player& command){
     if(recv(socket_server, (char *)&command, sizeof(command), 0) < 0){
         std::cerr << "Failed to accept command from server" << std::endl;
         return -1;
@@ -70,3 +70,5 @@ void Client::close_socket(){
     closesocket(socket_server);
     WSACleanup();
 }
+
+

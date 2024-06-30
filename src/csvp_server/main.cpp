@@ -11,17 +11,25 @@
 using namespace std;
 
 
-void work_client(Server* server, SOCKET socket_client ,Server::Command command){
+void work_client(Server* server, SOCKET socket_client, SOCKET socket_client2, Server::Player command){
     while(true){
+
         if(server->recv_client(socket_client, command) < 0) {
             delete server;
             system("pause");
         }
-        if(command.command_type != 2) {
-            std::cout << "Command - " << command.command_type << std::endl;
-        } else{
+
+        if(server->send_client(socket_client2, command) < 0){
+            delete server;
             system("pause");
         }
+
+
+//        if(command.command_type != 2) {
+//            std::cout << "Command - " << command.command_type << std::endl;
+//        } else{
+//            system("pause");
+//        }
     }
 }
 
@@ -41,7 +49,8 @@ int main()
 
     Server* server = new Server();
 
-    Server::Command command;
+    Server::Player data_player1;
+    Server::Player data_player2;
 
     if(server->start_server() < 0){
         delete server;
@@ -66,9 +75,9 @@ int main()
     }
 
     while(true){
-        std::thread client1(work_client, server, server->socket_client1, command);
+        std::thread client1(work_client, server, server->socket_client1, server->socket_client2, data_player1);
         client1.detach();
-        work_client(server, server->socket_client2, command);
+        work_client(server, server->socket_client2, server->socket_client1, data_player2);
     }
 
     delete server;
