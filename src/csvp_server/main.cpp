@@ -6,11 +6,30 @@
 #include <WS2tcpip.h>
 #include <stdio.h>
 #include <vector>
+#include <thread>
 
 using namespace std;
 
+
+void work_client(Server* server, SOCKET socket_client ,Server::Command command){
+    while(true){
+        if(server->recv_client(socket_client, command) < 0) {
+            delete server;
+            system("pause");
+        }
+        if(command.command_type != 2) {
+            std::cout << "Command - " << command.command_type << std::endl;
+        } else{
+            system("pause");
+        }
+    }
+}
+
 int main()
 {
+
+    setlocale(LC_ALL, "Russian");
+
     WSADATA wsaData;
 
     int result;
@@ -34,27 +53,26 @@ int main()
         return -1;
     }
 
+    if(server->accept_clients(server->socket_client1, server->addr_client1) < 0){
+        delete server;
+        system("pause");
+        return -1;
+    }
 
+    if(server->accept_clients(server->socket_client2, server->addr_client2) < 0){
+        delete server;
+        system("pause");
+        return -1;
+    }
 
     while(true){
-
-        if(server->accpet_clients()< 0){
-            delete server;
-            return -1;
-        }
-
-        if(server->recv_client(command) < 0) {
-            delete server;
-            return -1;
-        }
-        if(command.command_type != 2) {
-            std::cout << "Комманда - " << command.command_type << std::endl;
-        } else{
-             break;
-        }
+        std::thread client1(work_client, server, server->socket_client1, command);
+        client1.detach();
+        work_client(server, server->socket_client2, command);
     }
 
     delete server;
 
     return 0;
 }
+

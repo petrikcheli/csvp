@@ -14,15 +14,18 @@
 class Server
 {
 
-    const char* IP_SERVER = "192.168.0.4";
+    const char* IP_SERVER = "192.168.31.142";
     const int PORT_SERVER = 8000;
     sockaddr_in addr_server;
     SOCKET socket_server;
 
 
+public:
+    sockaddr_in addr_client1;
+    SOCKET socket_client1;
 
-    sockaddr_in addr_client;
-    SOCKET socket_client;
+    sockaddr_in addr_client2;
+    SOCKET socket_client2;
 
 public:
     struct Command{
@@ -35,9 +38,9 @@ public:
 
     int start_server();
     int listen_server();
-    int accpet_clients();
-    int send_client(struct Command& command);
-    int recv_client(struct Command& command);
+    int accept_clients(SOCKET& socket_client, sockaddr_in& addr_client);
+    int send_client(SOCKET& socket_client, struct Command& command);
+    int recv_client(SOCKET& socket_client, struct Command& command);
 
     void close_all();
 };
