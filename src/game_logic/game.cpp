@@ -11,6 +11,10 @@ void Game::Map::updateMap(Game::Player& player, int oldX, int oldY) {
     if (oldY >= 0 && oldY < HEIGHT && oldX >= 0 && oldX < WIDTH) {
         gameMap[oldY][oldX] = ' ';
     }
+
+    if (player.posY >= 0 && player.posY < HEIGHT && player.posX >= 0 && player.posX < WIDTH) {
+        gameMap[player.posY][player.posX] = player.playerIcon;
+    }
 }
 
 void Game::Map::display(){
