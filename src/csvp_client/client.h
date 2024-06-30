@@ -14,7 +14,7 @@ class Client
 {
 
     int PORT_SERVER = 8000;
-    const char* IP_SERVER = "192.168.0.4";
+    const char* IP_SERVER = "192.168.31.142";
     SOCKET socket_server;
     sockaddr_in addr_server;
 
