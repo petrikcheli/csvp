@@ -1,0 +1,4 @@
+# ninja log v6
+1	331	1719995798494817021	CMakeFiles/linux_server_csvp.dir/server.cpp.o	f8d9569285873b12
+1	489	1719995798494817021	CMakeFiles/linux_server_csvp.dir/main.cpp.o	daf1bc69bb51c02
+489	566	1719995798982817044	linux_server_csvp	8db90bd730925194
