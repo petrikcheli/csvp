@@ -38,7 +38,20 @@ void work_client(Server* server, int socket_client1, int socket_client2,
         }
         std::cerr << "player1 -> data1" << std::endl;
 
+        if(server->recv_client(socket_client2, data_player2) < 0) {
+            delete server;
+
+            system("pause");
+        }
+        std::cerr << "player1 -> data1" << std::endl;
+
         if(server->send_client(socket_client2, data_player1) < 0){
+            delete server;
+            system("pause");
+        }
+        std::cerr << "player2 -> data1" << std::endl;
+
+        if(server->send_client(socket_client1, data_player2) < 0){
             delete server;
             system("pause");
         }
@@ -96,15 +109,19 @@ int main()
     }
 
     //создаем второй поток
-    std::thread client1(work_client, server, server->socket_client1, server->socket_client2, data_player1, data_player2);
-    client1.detach();
+    // std::thread client1(work_client, server, server->socket_client1, server->socket_client2, data_player1, data_player2);
+    // client1.detach();
 
-    //создаем третий поток
-    std::thread client2(work_client, server, server->socket_client2, server->socket_client1, data_player2, data_player1);
-    client2.detach();
+    // //создаем третий поток
+    // std::thread client2(work_client, server, server->socket_client2, server->socket_client1, data_player2, data_player1);
+    // client2.detach();
 
     //так как остался самый первый поток, то я его увожу в бесконечный цикл
-    while(true){}
+
+
+    while(true){
+        work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2);
+    }
 
     delete server;
 
