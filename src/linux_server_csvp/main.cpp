@@ -20,9 +20,21 @@ void work_client(Server* server, int socket_client1, int socket_client2,
     }
     std::cerr << "player1 -> data1" << std::endl;
 
+    if(server->send_client(socket_client2, data_player2) < 0){
+        delete server;
+        system("pause");
+    }
+    std::cerr << "player1 -> data1" << std::endl;
+
     //эта строчка отработает только один раз, когда начнется игра
     //отправляем клиенту координаты противника
     if(server->send_client(socket_client1, data_player2) < 0){
+        delete server;
+        system("pause");
+    }
+    std::cerr << "player1 -> data2" << std::endl;
+
+    if(server->send_client(socket_client2, data_player1) < 0){
         delete server;
         system("pause");
     }
