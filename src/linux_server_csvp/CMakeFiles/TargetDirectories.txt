@@ -1,7 +1,0 @@
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/linux_server_csvp.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/edit_cache.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/rebuild_cache.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/list_install_components.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/install.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/install/local.dir
-/home/petricheli/csvp/src/linux_server_csvp/CMakeFiles/install/strip.dir

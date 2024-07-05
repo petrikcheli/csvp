@@ -1,7 +1,0 @@
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/linux_server_csvp.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/edit_cache.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/rebuild_cache.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/list_install_components.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/install.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/install/local.dir
-/home/petricheli/linux_server_csvp/build/Desktop_Qt_6_7_2-Release/CMakeFiles/install/strip.dir
