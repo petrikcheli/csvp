@@ -4,6 +4,10 @@
 
 class Game{
 public:
+    // #define VK_W 0x57
+    // #define VK_A 0x41
+    // #define VK_S 0x53
+    // #define VK_D 0x44
     bool isRunning = true;
     struct Player{
         char playerIcon = 'O';
@@ -41,5 +45,15 @@ public:
         void updateMap(Player& player, int oldX, int oldY);
         void display();
     };
+
+    // struct Shoot{
+    //     int bulletPosX;
+    //     int bulletPosY;
+    //     char bulletIconX = '|';
+    //     char bulletIconY = '-';
+    //     bool direction = true; //true - x, false - y
+    //     void bulletUpdate(Map& gameMap, int oldBulletPosX, int oldBulletPosY);
+    // };
+
     void handleInput(Player& player, Map& map);
 };

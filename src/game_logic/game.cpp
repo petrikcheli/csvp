@@ -23,6 +23,30 @@ void Game::Map::display(){
     }
 }
 
+// void Game::Shoot::bulletUpdate(Game::Map& gm, int oldBulletPosX, int oldBulletPosY){
+//     if (oldBulletPosY >= 0 && oldBulletPosY < gm.HEIGHT && oldBulletPosX >= 0 && oldBulletPosX < gm.WIDTH) {
+//         gm.gameMap[oldBulletPosY][oldBulletPosX] = ' ';
+//     }
+
+//     char bulletIcon = direction ? bulletIconX : bulletIconY;
+
+//     if(bulletPosY >= 0 && bulletPosY < gm.HEIGHT && bulletPosX >= 0 && bulletPosX < gm.WIDTH){
+//         gm.gameMap[bulletPosY][bulletPosX] = bulletIcon;
+
+//         oldBulletPosX = bulletPosX;
+//         oldBulletPosY = bulletPosY;
+
+//         bulletPosX += 1;
+//         bulletPosY += (direction ? 1 : -1);
+//         Sleep(200);
+//         Game::Shoot::bulletUpdate(gm, oldBulletPosX, oldBulletPosY);
+//     }
+//     else {
+//         bulletIcon = ' ';
+//         gm.gameMap[bulletPosY][bulletPosX] = bulletIcon;
+//     }
+// }
+
 void Game::handleInput(Player& player, Map& map) {
     if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
         if (player.posX > 2) {
@@ -43,5 +67,21 @@ void Game::handleInput(Player& player, Map& map) {
         if (player.posY > 1) {
             player.posY--;
         }
+    }
+
+    if (GetAsyncKeyState(VK_SPACE) & 0x8000) { // Клавиша Space
+        // if (shoot.bulletPosX == -1 && shoot.bulletPosY == -1) {
+        //     // Устанавливаем начальную позицию пули рядом с игроком
+        //     if (shoot.direction) { // Если направление - горизонталь
+        //         shoot.bulletPosX = player.posX + 1;
+        //         shoot.bulletPosY = player.posY;
+        //         shoot.bulletUpdate(map, oldBulletPosX, oldBulletPosY);
+        //     } 
+        //     else { // Если направление - вертикаль
+        //         shoot.bulletPosX = player.posX;
+        //         shoot.bulletPosY = player.posY - 1;
+        //         shoot.bulletUpdate(map, oldBulletPosX, oldBulletPosY);
+        //     }
+        // }
     }
 }
