@@ -7,4 +7,5 @@ add_executable(csvp
     src/game_logic/game.cpp
     src/game_logic/game.h
     src/game_logic/game_main.cpp
+    src/game_logic/screensaver.cpp
 )

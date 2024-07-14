@@ -23,65 +23,90 @@ void Game::Map::display(){
     }
 }
 
-// void Game::Shoot::bulletUpdate(Game::Map& gm, int oldBulletPosX, int oldBulletPosY){
-//     if (oldBulletPosY >= 0 && oldBulletPosY < gm.HEIGHT && oldBulletPosX >= 0 && oldBulletPosX < gm.WIDTH) {
-//         gm.gameMap[oldBulletPosY][oldBulletPosX] = ' ';
-//     }
+void Game::updateBullets(Map& map) {
+    for (auto it = bullets.begin(); it != bullets.end(); ) {
+        int oldX = it->posX;
+        int oldY = it->posY;
 
-//     char bulletIcon = direction ? bulletIconX : bulletIconY;
+        switch (it->direction){
+        case Bullet::RIGHT:
+            it->posX += 1;
+            break;
+        case Bullet::LEFT:
+            it->posX -= 1;
+            break; 
+        case Bullet::UP:
+            it->posY -= 1;
+            break;
+        case Bullet::DOWN:
+            it->posY += 1;
+            break;
+        }
 
-//     if(bulletPosY >= 0 && bulletPosY < gm.HEIGHT && bulletPosX >= 0 && bulletPosX < gm.WIDTH){
-//         gm.gameMap[bulletPosY][bulletPosX] = bulletIcon;
-
-//         oldBulletPosX = bulletPosX;
-//         oldBulletPosY = bulletPosY;
-
-//         bulletPosX += 1;
-//         bulletPosY += (direction ? 1 : -1);
-//         Sleep(200);
-//         Game::Shoot::bulletUpdate(gm, oldBulletPosX, oldBulletPosY);
-//     }
-//     else {
-//         bulletIcon = ' ';
-//         gm.gameMap[bulletPosY][bulletPosX] = bulletIcon;
-//     }
-// }
+        // Удаляем пулю, если она выходит за границы карты
+        if (it->posX >= map.WIDTH || it->posX < 0 || it->posY >= map.HEIGHT || it->posY < 0) {
+            it = bullets.erase(it);
+        } else {
+            // Обновляем карту с новой позицией пули
+            if (oldY >= 0 && oldY < map.HEIGHT - 1 && oldX >= 0 && oldX < map.WIDTH) {
+                map.gameMap[oldY][oldX] = ' ';
+            }
+            if (it->posY >= 1 && it->posY < map.HEIGHT - 1 && it->posX >= 1 && it->posX < map.WIDTH - 1) {
+                map.gameMap[it->posY][it->posX] = (it->direction == Bullet::LEFT || it->direction == Bullet::RIGHT) ? '-' : '|';
+            }
+            ++it;
+        }
+    }
+}
 
 void Game::handleInput(Player& player, Map& map) {
     if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
         if (player.posX > 2) {
             player.posX -= 2;
+            player.lastDirection = Player::LEFT;
         }
     }
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
         if (player.posX < map.WIDTH - 2) {
             player.posX += 2;
+            player.lastDirection = Player::RIGHT;
         }
     }
     if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
         if (player.posY < map.HEIGHT - 2) {
             player.posY++;
+            player.lastDirection = Player::DOWN;
         }
     }
     if (GetAsyncKeyState(VK_UP) & 0x8000) {
         if (player.posY > 1) {
             player.posY--;
+            player.lastDirection = Player::UP;
         }
     }
 
+    __UINT32_TYPE__ currentTime = GetTickCount();
+
     if (GetAsyncKeyState(VK_SPACE) & 0x8000) { // Клавиша Space
-        // if (shoot.bulletPosX == -1 && shoot.bulletPosY == -1) {
-        //     // Устанавливаем начальную позицию пули рядом с игроком
-        //     if (shoot.direction) { // Если направление - горизонталь
-        //         shoot.bulletPosX = player.posX + 1;
-        //         shoot.bulletPosY = player.posY;
-        //         shoot.bulletUpdate(map, oldBulletPosX, oldBulletPosY);
-        //     } 
-        //     else { // Если направление - вертикаль
-        //         shoot.bulletPosX = player.posX;
-        //         shoot.bulletPosY = player.posY - 1;
-        //         shoot.bulletUpdate(map, oldBulletPosX, oldBulletPosY);
-        //     }
-        // }
+        if(currentTime - lastShotTime >= shootInterval){
+           switch (player.lastDirection){
+            case Player::RIGHT:
+                bullets.push_back({player.posX + 1, player.posY, Bullet::RIGHT});
+                break;
+
+            case Player::LEFT:
+                bullets.push_back({player.posX - 1, player.posY, Bullet::LEFT});
+                break;
+
+            case Player::UP:
+                bullets.push_back({player.posX, player.posY - 1, Bullet::UP});
+                break;
+
+            case Player::DOWN:
+                bullets.push_back({player.posX, player.posY + 1, Bullet::DOWN});
+                break;
+            }
+            lastShotTime = currentTime;
+        }
     }
 }

@@ -8,12 +8,17 @@ public:
     // #define VK_A 0x41
     // #define VK_S 0x53
     // #define VK_D 0x44
+
+    __UINT32_TYPE__ lastShotTime = 0;
+    const __UINT32_TYPE__ shootInterval = 500; //расчёт в милисекундах
+
     bool isRunning = true;
     struct Player{
         char playerIcon = 'O';
         int posX = 0;
         int posY = 0;
         bool isAlive = true;
+        enum Direction { UP, DOWN, LEFT, RIGHT } lastDirection;
     };
     struct Map{
         std::vector<std::string> gameMap = {
@@ -46,14 +51,14 @@ public:
         void display();
     };
 
-    // struct Shoot{
-    //     int bulletPosX;
-    //     int bulletPosY;
-    //     char bulletIconX = '|';
-    //     char bulletIconY = '-';
-    //     bool direction = true; //true - x, false - y
-    //     void bulletUpdate(Map& gameMap, int oldBulletPosX, int oldBulletPosY);
-    // };
+    struct Bullet{
+        int posX;
+        int posY;
+        // bool direction;
+        enum Direction { UP, DOWN, LEFT, RIGHT } direction;
+    };
+    std::vector<Bullet> bullets;
 
+    void updateBullets(Map& map);
     void handleInput(Player& player, Map& map);
 };
