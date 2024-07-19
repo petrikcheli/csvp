@@ -6,6 +6,10 @@ void Game::Map::setCursor(int x, int y){
     SetConsoleCursorPosition(output, pos);
 }
 
+// void Game::BulletManager::addBullet(int x, int y, Bullet::Direction dir){
+//     bullets.push_back({x, y, dir});
+// }
+
 void Game::Map::updateMap(Game::Player& player, int oldX, int oldY) {
 // Восстанавливаем символ на старой позиции
     if (oldY >= 0 && oldY < HEIGHT && oldX >= 0 && oldX < WIDTH) {
@@ -23,8 +27,8 @@ void Game::Map::display(){
     }
 }
 
-void Game::updateBullets(Map& map, Bullet& bullet) {
-    for (auto it = bullet.bullets.begin(); it != bullet.bullets.end(); ) {
+void Game::updateBullets(Map& map, BulletManager& bulletArr) {
+    for (auto it = bulletArr.bullets.begin(); it != bulletArr.bullets.end(); ) {
         int oldX = it->posX;
         int oldY = it->posY;
 
@@ -45,7 +49,7 @@ void Game::updateBullets(Map& map, Bullet& bullet) {
 
         // Удаляем пулю, если она выходит за границы карты
         if (it->posX >= map.WIDTH || it->posX < 0 || it->posY >= map.HEIGHT || it->posY < 0) {
-            it = bullet.bullets.erase(it);
+            it = bulletArr.bullets.erase(it);
         } else {
             // Обновляем карту с новой позицией пули
             if (oldY >= 0 && oldY < map.HEIGHT - 1 && oldX >= 0 && oldX < map.WIDTH) {
@@ -59,7 +63,7 @@ void Game::updateBullets(Map& map, Bullet& bullet) {
     }
 }
 
-void Game::handleInput(Player& player, Map& map, Bullet& bullet) {
+void Game::handleInput(Player& player, Map& map, BulletManager& bulletArr) {
     if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
         if (player.posX > 2) {
             player.posX -= 2;
@@ -91,19 +95,19 @@ void Game::handleInput(Player& player, Map& map, Bullet& bullet) {
         if(currentTime - lastShotTime >= shootInterval){
            switch (player.lastDirection){
             case Player::RIGHT:
-                bullet.bullets.push_back({player.posX + 1, player.posY, Bullet::RIGHT});
+                bulletArr.bullets.push_back({player.posX + 1, player.posY, Bullet::RIGHT});
                 break;
 
             case Player::LEFT:
-                bullet.bullets.push_back({player.posX - 1, player.posY, Bullet::LEFT});
+                bulletArr.bullets.push_back({player.posX - 1, player.posY, Bullet::LEFT});
                 break;
 
             case Player::UP:
-                bullet.bullets.push_back({player.posX, player.posY - 1, Bullet::UP});
+                bulletArr.bullets.push_back({player.posX, player.posY - 1, Bullet::UP});
                 break;
 
             case Player::DOWN:
-                bullet.bullets.push_back({player.posX, player.posY + 1, Bullet::DOWN});
+                bulletArr.bullets.push_back({player.posX, player.posY + 1, Bullet::DOWN});
                 break;
             }
             lastShotTime = currentTime;
@@ -111,10 +115,11 @@ void Game::handleInput(Player& player, Map& map, Bullet& bullet) {
     }
 }
 
-void Game::endGame(Player& player, Bullet& bullet){
-    for (auto it = bullet.bullets.begin(); it != bullet.bullets.end(); ) {
-        if(it->posX == player.posX || it->posX == player.posY || it->posY == player.posX || it->posY == player.posY){
-            Game::isRunning = false;
+void Game::endGame(Player& player, BulletManager& bulletArr) {
+    for (auto it = bulletArr.bullets.begin(); it != bulletArr.bullets.end(); ++it) {
+        if (it->posX == player.posX && it->posY == player.posY) {
+            isRunning = false;
+            return;
         }
     }
 }

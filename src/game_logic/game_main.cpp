@@ -6,8 +6,9 @@ int main() {
     Game::Player player;
     Game::Map map;
     Game::Player enemy;
-    Game::Bullet playerBullet;
-    Game::Bullet enemyBullet;
+    Game::BulletManager playerBullet;
+    Game::BulletManager enemyBullet;
+
     Rocket rocket;
 
     // Инициализация позиций игрока и врага
@@ -17,7 +18,7 @@ int main() {
     enemy.posX = map.WIDTH / 2;
     enemy.posY = map.HEIGHT - 2;
 
-    rocket.printScreenSaver();
+    // rocket.printScreenSaver();
 
     // Основной цикл игры
     while (game.isRunning) {
@@ -32,6 +33,7 @@ int main() {
         // Обновление карты и курсора
         map.setCursor(0, 0);
         game.updateBullets(map, playerBullet);
+        game.updateBullets(map, enemyBullet);
         map.updateMap(player, oldX, oldY);
         map.updateMap(enemy, oldEnemyX, oldEnemyY);
 
