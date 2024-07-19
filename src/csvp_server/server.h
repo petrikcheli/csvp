@@ -6,7 +6,7 @@
 #include <WS2tcpip.h>
 #include <stdio.h>
 #include <vector>
-#include "game.h"
+#include "../game_logic/game.h"
 //#pragma comment(lib, "Ws2_32.lib")
 
 class Server
