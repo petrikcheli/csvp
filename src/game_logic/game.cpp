@@ -23,8 +23,8 @@ void Game::Map::display(){
     }
 }
 
-void Game::updateBullets(Map& map) {
-    for (auto it = bullets.begin(); it != bullets.end(); ) {
+void Game::updateBullets(Map& map, Bullet& bullet) {
+    for (auto it = bullet.bullets.begin(); it != bullet.bullets.end(); ) {
         int oldX = it->posX;
         int oldY = it->posY;
 
@@ -45,7 +45,7 @@ void Game::updateBullets(Map& map) {
 
         // Удаляем пулю, если она выходит за границы карты
         if (it->posX >= map.WIDTH || it->posX < 0 || it->posY >= map.HEIGHT || it->posY < 0) {
-            it = bullets.erase(it);
+            it = bullet.bullets.erase(it);
         } else {
             // Обновляем карту с новой позицией пули
             if (oldY >= 0 && oldY < map.HEIGHT - 1 && oldX >= 0 && oldX < map.WIDTH) {
@@ -59,7 +59,7 @@ void Game::updateBullets(Map& map) {
     }
 }
 
-void Game::handleInput(Player& player, Map& map) {
+void Game::handleInput(Player& player, Map& map, Bullet& bullet) {
     if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
         if (player.posX > 2) {
             player.posX -= 2;
@@ -91,22 +91,30 @@ void Game::handleInput(Player& player, Map& map) {
         if(currentTime - lastShotTime >= shootInterval){
            switch (player.lastDirection){
             case Player::RIGHT:
-                bullets.push_back({player.posX + 1, player.posY, Bullet::RIGHT});
+                bullet.bullets.push_back({player.posX + 1, player.posY, Bullet::RIGHT});
                 break;
 
             case Player::LEFT:
-                bullets.push_back({player.posX - 1, player.posY, Bullet::LEFT});
+                bullet.bullets.push_back({player.posX - 1, player.posY, Bullet::LEFT});
                 break;
 
             case Player::UP:
-                bullets.push_back({player.posX, player.posY - 1, Bullet::UP});
+                bullet.bullets.push_back({player.posX, player.posY - 1, Bullet::UP});
                 break;
 
             case Player::DOWN:
-                bullets.push_back({player.posX, player.posY + 1, Bullet::DOWN});
+                bullet.bullets.push_back({player.posX, player.posY + 1, Bullet::DOWN});
                 break;
             }
             lastShotTime = currentTime;
+        }
+    }
+}
+
+void Game::endGame(Player& player, Bullet& bullet){
+    for (auto it = bullet.bullets.begin(); it != bullet.bullets.end(); ) {
+        if(it->posX == player.posX || it->posX == player.posY || it->posY == player.posX || it->posY == player.posY){
+            Game::isRunning = false;
         }
     }
 }

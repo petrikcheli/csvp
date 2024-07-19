@@ -52,13 +52,16 @@ public:
     };
 
     struct Bullet{
+        static std::vector<Bullet> bullets;
         int posX;
         int posY;
         // bool direction;
         enum Direction { UP, DOWN, LEFT, RIGHT } direction;
     };
-    std::vector<Bullet> bullets;
 
-    void updateBullets(Map& map);
-    void handleInput(Player& player, Map& map);
+    // std::vector<Bullet> bullets;
+
+    void updateBullets(Map& map, Bullet& bullet);
+    void handleInput(Player& player, Map& map, Bullet& bullet);
+    void endGame(Player& player, Bullet& bullet);
 };
