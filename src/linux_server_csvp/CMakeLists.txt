@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(linux_server_csvp main.cpp
     server.h server.cpp
     #game.h game.cpp
-    #../game_logic/game.h ../game_logic/game.cpp
+    ../game_logic/game.h
     )
 
 include(GNUInstallDirs)

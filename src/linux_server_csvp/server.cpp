@@ -13,7 +13,7 @@ Server::~Server(){
 int Server::start_server()
 {
 
-    socket_server = socket(AF_INET, SOCK_STREAM, 0);
+    socket_server = socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP);
 
     if(socket_server < 0){
         std::cout << "Failed to create socket" << std::endl;
@@ -67,7 +67,7 @@ int Server::accept_clients(int& socket_client, sockaddr_in& addr_client)
     return 0;
 }
 
-int Server::send_client(int& socket_client, struct Server::Player& command)
+int Server::send_client(int& socket_client, struct Game::Player& command)
 {
     if(send(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to send message to client" << std::endl;
@@ -77,7 +77,7 @@ int Server::send_client(int& socket_client, struct Server::Player& command)
     return 0;
 }
 
-int Server::send_client(int &socket_client, BulletManager &command){
+int Server::send_client(int &socket_client, Game::BulletManager &command){
     Size_Bullets size;
     size.size = command.bullets.size();
 
@@ -97,7 +97,7 @@ int Server::send_client(int &socket_client, BulletManager &command){
 }
 
 
-int Server::recv_client(int& socket_client, struct Server::Player& command)
+int Server::recv_client(int& socket_client, struct Game::Player& command)
 {
     if(recv(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to receive message from client" << std::endl;
@@ -108,10 +108,10 @@ int Server::recv_client(int& socket_client, struct Server::Player& command)
 }
 
 
-int Server::recv_client(int& socket_client, struct Server::BulletManager& command)
+int Server::recv_client(int& socket_client, struct Game::BulletManager& command)
 {
     Size_Bullets size;
-    if(recv(socket_client, (char *)&size, sizeof(size), 0) < 0){
+    if(recv(socket_client, (char *)&size.size, sizeof(int), 0) < 0){
         std::cout << "Failed to receive message from client" << std::endl;
         return -1;
     }
