@@ -1,4 +1,4 @@
-#ifndef SERVER_H
+﻿#ifndef SERVER_H
 #define SERVER_H
 
 #include <iostream>
@@ -12,7 +12,7 @@
 class Server
 {
 
-    const char* IP_SERVER = "192.168.31.142";
+    const char* IP_SERVER = "192.168.0.187";
     const int PORT_SERVER = 8000;
     sockaddr_in addr_server;
     SOCKET socket_server;
@@ -29,6 +29,9 @@ public:
     struct Command{
         int command_type = 0;
     };
+    struct Size_Bullets{
+        int size = 0;
+    };
 
 
 public:
@@ -39,7 +42,9 @@ public:
     int listen_server();
     int accept_clients(SOCKET& socket_client, sockaddr_in& addr_client);
     int send_client(SOCKET& socket_client, struct Game::Player& command);
+    int send_client(SOCKET& socket_client, struct Game::BulletManager& command);
     int recv_client(SOCKET& socket_client, struct Game::Player& command);
+    int recv_client(SOCKET& socket_client, struct Game::BulletManager& command);
 
     void close_all();
 };

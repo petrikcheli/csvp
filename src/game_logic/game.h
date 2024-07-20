@@ -1,3 +1,5 @@
+﻿#ifndef GAME_H
+#define GAME_H
 #include<iostream>
 #include<vector>
 #include<Windows.h>
@@ -66,3 +68,5 @@ public:
     void handleInput(Player& player, Map& map, BulletManager& bulletArr);
     void endGame(Player& player, BulletManager& bulletArr);
 };
+
+#endif // GAME_H

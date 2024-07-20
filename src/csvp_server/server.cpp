@@ -1,4 +1,4 @@
-#include "server.h"
+﻿#include "server.h"
 
 #include <iostream>
 #include <WinSock2.h>
@@ -86,12 +86,53 @@ int Server::send_client(SOCKET& socket_client, struct Game::Player& command)
     return 0;
 }
 
+//отправляем массив пуль
+int Server::send_client(SOCKET& socket_client, struct Game::BulletManager& command)
+{
+    Size_Bullets size;
+    size.size = command.bullets.size();
+    if(send(socket_client, (char *)&size, sizeof(size), 0) < 0){
+        std::cout << "Failed to send sizeof to client" << std::endl;
+        return -1;
+    }
+    for(int i = 0; i < size.size; i++){
+        if(send(socket_client, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
+            std::cout << "Failed to send bullets to client" << std::endl;
+            return -1;
+        }
+    }
+
+
+    return 0;
+}
+
 int Server::recv_client(SOCKET& socket_client, struct Game::Player& command)
 {
     if(recv(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to receive message from client" << std::endl;
         return -1;
     }
+
+    return 0;
+}
+
+// принимаем массив пуль
+int Server::recv_client(SOCKET& socket_client, struct Game::BulletManager& command)
+{
+    Size_Bullets size;
+    if(recv(socket_client, (char *)&size, sizeof(size), 0) < 0){
+        std::cout << "Failed to receive sizeof from client" << std::endl;
+        return -1;
+    }
+
+    command.bullets.resize(size.size);
+    for(int i = 0; i < size.size; i++){
+        if(recv(socket_client, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
+            std::cout << "Failed to receive bullets from client" << std::endl;
+            return -1;
+        }
+    }
+
 
     return 0;
 }

@@ -1,4 +1,4 @@
-#include "client.h"
+﻿#include "client.h"
 
 // Конструктор клиента, здесь можно инициализировать необходимые переменные
 Client::Client()
@@ -18,12 +18,12 @@ int Client::start_client()
 
     // Проверка успешности создания сокета
     if(socket_server == INVALID_SOCKET){
-        std::cout << "Ошибка создания сокета" << std::endl;
+        std::cout << "Failed create socket" << std::endl;
         closesocket(socket_server); // Закрытие сокета при ошибке
         WSACleanup(); // Освобождение ресурсов Windows Sockets
         return -1;
     } else {
-        std::cout << "Сокет успешно создан" << std::endl;
+        std::cout << "Managed to create socket" << std::endl;
     }
 
     // Настройка параметров сервера
@@ -47,27 +47,64 @@ int Client::start_client()
 // Метод для подключения к серверу
 int Client::connect_to_server(){
     if(connect(socket_server, (struct sockaddr *)&addr_server, sizeof(addr_server))<0){
-        std::cout << "Ошибка подключения к серверу" << std::endl;
+        std::cout << "Error connect to server" << std::endl;
         return -1;
     }
 
     return 0; // Успешное подключение
 }
 
-// Метод для отправки команды серверу
+// Метод для отправки координат героя серверу
 int Client::send_command(struct Game::Player& command){
     if(send(socket_server, (char *)&command, sizeof(command), 0) < 0){
-        std::cerr << "Ошибка отправки команды серверу" << std::endl;
+        std::cerr << "Failed send command to server" << std::endl;
         return -1;
     }
     return 0; // Успешная отправка команды
 }
 
-// Метод для получения команды от сервера
+// Метод для отправки массива пуль героя
+int Client::send_command(struct Game::BulletManager& command){
+    Size_Bullets size;
+    size.size = command.bullets.size();
+    if(send(socket_server, (char *)&size.size, sizeof(int), 0) < 0){
+        std::cout << "Failed to send sizeof to client" << std::endl;
+        return -1;
+    }
+
+    for(int i = 0; i < size.size; i++){
+        if(send(socket_server, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
+            std::cerr << "Failed to send bullet with index " << i << std::endl;
+            return -1;
+        }
+    }
+
+    return 0; // Успешная отправка команды
+}
+
+// Метод для получения координат противника от сервера
 int Client::recv_command(struct Game::Player& command){
     if(recv(socket_server, (char *)&command, sizeof(command), 0) < 0){
-        std::cerr << "Ошибка получения команды от сервера" << std::endl;
+        std::cerr << "Failed to receive message" << std::endl;
         return -1;
+    }
+    return 0; // Успешное получение команды
+}
+
+// Метод для получения массива пуль противника
+int Client::recv_command(struct Game::BulletManager& command){
+    Size_Bullets size;
+    if(recv(socket_server, (char *)&size, sizeof(size), 0) < 0){
+        std::cout << "Failed to receive sizeof from client" << std::endl;
+        return -1;
+    }
+
+    command.bullets.resize(size.size);
+    for(int i = 0; i < size.size; i++){
+        if(recv(socket_server, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
+            std::cerr << "Failed to receive bullet with index " << i << std::endl;
+            return -1;
+        }
     }
     return 0; // Успешное получение команды
 }
