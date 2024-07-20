@@ -72,18 +72,6 @@ void work_client(Server* server, int socket_client1, int socket_client2,
         }
         std::cerr << "player2 -> bullet2" << std::endl;
 
-        if(server->send_client(socket_client2, data_player1) < 0){
-            delete server;
-            system("pause");
-        }
-        std::cerr << "player2 -> data1" << std::endl;
-
-        if(server->send_client(socket_client1, data_player2) < 0){
-            delete server;
-            system("pause");
-        }
-        std::cerr << "player2 -> data1" << std::endl;
-
         if(server->send_client(socket_client2, bullets_player1) < 0){
             delete server;
             system("pause");
@@ -95,6 +83,18 @@ void work_client(Server* server, int socket_client1, int socket_client2,
             system("pause");
         }
         std::cerr << "player2 -> bullets2" << std::endl;
+
+        if(server->send_client(socket_client2, data_player1) < 0){
+            delete server;
+            system("pause");
+        }
+        std::cerr << "player2 -> data1" << std::endl;
+
+        if(server->send_client(socket_client1, data_player2) < 0){
+            delete server;
+            system("pause");
+        }
+        std::cerr << "player2 -> data1" << std::endl;
     }
 }
 
