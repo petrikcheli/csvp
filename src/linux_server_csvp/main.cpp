@@ -112,6 +112,8 @@ int main()
 
     Server::Player data_player1;
     Server::Player data_player2;
+    Server::BulletManager bullets_player1;
+    Server::BulletManager bullets_player2;
 
     // сервер самостоятельно определяет, кто будет сверху, а кто будет снизу
     // соответсвенно тут проходит инциализация начальных координат
@@ -159,7 +161,7 @@ int main()
 
 
     while(true){
-        work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2);
+        work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2, bullets_player1, bullets_player2);
     }
 
     delete server;
