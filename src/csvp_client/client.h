@@ -1,4 +1,4 @@
-#ifndef CLIENT_H
+﻿#ifndef CLIENT_H
 #define CLIENT_H
 
 #include <iostream>
@@ -15,7 +15,7 @@ class Client
 {
     // Порт и IP-адрес сервера
     int PORT_SERVER = 8000;
-    const char* IP_SERVER = "192.168.0.4";
+    const char* IP_SERVER = "192.168.0.187";
 
     // Сокет и структура для адреса сервера
     SOCKET socket_server;
@@ -25,6 +25,9 @@ public:
     // Структура команды, можно расширить при необходимости
     struct Command{
         int command_type = 0;
+    };
+    struct Size_Bullets{
+        int size = 0;
     };
 
 public:
@@ -43,8 +46,14 @@ public:
     // Метод для отправки команды серверу
     int send_command(struct Game::Player& command);
 
+    // Метод для отправки команды серверу
+    int send_command(struct Game::BulletManager& command);
+
     // Метод для получения команды от сервера
     int recv_command(struct Game::Player& command);
+
+    // Метод для получения команды от сервера
+    int recv_command(struct Game::BulletManager& command);
 
     // Метод для закрытия сокета
     void close_socket();
