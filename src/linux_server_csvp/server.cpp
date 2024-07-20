@@ -108,7 +108,7 @@ int Server::recv_client(int& socket_client, struct Server::Player& command)
 }
 
 
-int Server::recv_client(int& socket_client, struct BulletManager& command)
+int Server::recv_client(int& socket_client, struct Server::BulletManager& command)
 {
     Size_Bullets size;
     if(recv(socket_client, (char *)&size, sizeof(size), 0) < 0){

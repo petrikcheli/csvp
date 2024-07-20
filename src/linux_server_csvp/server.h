@@ -68,7 +68,7 @@ public:
     };
 
     struct Size_Bullets{
-        int size = 0
+        int size = 0;
     };
 
 public:
@@ -81,7 +81,7 @@ public:
     int send_client(int& socket_client, struct Server::Player& command);
     int send_client(int& socket_client, struct Server::BulletManager& command);
     int recv_client(int& socket_client, struct Server::Player& command);
-    int recv_client(int& socket_client, struct Server::Bullet& command);
+    int recv_client(int& socket_client, struct Server::BulletManager& command);
 
     void close_all();
 };
