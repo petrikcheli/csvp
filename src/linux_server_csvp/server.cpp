@@ -77,11 +77,51 @@ int Server::send_client(int& socket_client, struct Server::Player& command)
     return 0;
 }
 
+int Server::send_client(int &socket_client, BulletManager &command){
+    Size_Bullets size;
+    size.size = command.bullets.size();
+
+    if(send(socket_client, (char *)&size, sizeof(size), 0) < 0){
+        std::cout << "Failed to send message to client" << std::endl;
+        return -1;
+    }
+
+    for(int i = 0; i < size.size; i++){
+        if(send(socket_client, (char *)&command.bullets[i], sizeof(struct Bullet), 0) < 0){
+            std::cout << "Failed to send message to client" << std::endl;
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+
 int Server::recv_client(int& socket_client, struct Server::Player& command)
 {
     if(recv(socket_client, (char *)&command, sizeof(command), 0) < 0){
         std::cout << "Failed to receive message from client" << std::endl;
         return -1;
+    }
+
+    return 0;
+}
+
+
+int Server::recv_client(int& socket_client, struct BulletManager& command)
+{
+    Size_Bullets size;
+    if(recv(socket_client, (char *)&size, sizeof(size), 0) < 0){
+        std::cout << "Failed to receive message from client" << std::endl;
+        return -1;
+    }
+
+    command.bullets.resize(size.size);
+    for(int i = 0; i < size.size; i++){
+        if(recv(socket_client, (char *)&command.bullets[i], sizeof(struct Bullet), 0) < 0){
+            std::cout << "Failed to receive message from client" << std::endl;
+            return -1;
+        }
     }
 
     return 0;

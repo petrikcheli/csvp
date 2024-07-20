@@ -10,7 +10,8 @@ using namespace std;
 
 // главная функция работы с двумя клиентами
 void work_client(Server* server, int socket_client1, int socket_client2,
-                 Server::Player data_player1, Server::Player data_player2){
+                 Server::Player data_player1, Server::Player data_player2,
+                 Server::BulletManager bullets_player1, Server::BulletManager bullets_player2){
 
     //эта строчка отработает только один раз, когда начнется игра
     //отправляем клиенту его начальные координаты
@@ -55,7 +56,33 @@ void work_client(Server* server, int socket_client1, int socket_client2,
 
             system("pause");
         }
-        std::cerr << "player1 -> data1" << std::endl;
+        std::cerr << "player2 -> data2" << std::endl;
+
+        if(server->recv_client(socket_client1, bullets_player1) < 0) {
+            delete server;
+
+            system("pause");
+        }
+        std::cerr << "player1 -> bullet1" << std::endl;
+
+        if(server->recv_client(socket_client2, data_player2) < 0) {
+            delete server;
+
+            system("pause");
+        }
+        std::cerr << "player2 -> bullet2" << std::endl;
+
+        if(server->send_client(socket_client2, bullets_player1) < 0){
+            delete server;
+            system("pause");
+        }
+        std::cerr << "player2 -> bullets1" << std::endl;
+
+        if(server->send_client(socket_client1, bullets_player2) < 0){
+            delete server;
+            system("pause");
+        }
+        std::cerr << "player2 -> bullets2" << std::endl;
 
         if(server->send_client(socket_client2, data_player1) < 0){
             delete server;
@@ -85,6 +112,8 @@ int main()
 
     Server::Player data_player1;
     Server::Player data_player2;
+    Server::BulletManager bullets_player1;
+    Server::BulletManager bullets_player2;
 
     // сервер самостоятельно определяет, кто будет сверху, а кто будет снизу
     // соответсвенно тут проходит инциализация начальных координат
@@ -132,7 +161,7 @@ int main()
 
 
     while(true){
-        work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2);
+        work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2, bullets_player1, bullets_player2);
     }
 
     delete server;

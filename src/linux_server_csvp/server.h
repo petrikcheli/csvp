@@ -56,6 +56,20 @@ public:
         const int WIDTH = 60;
         const int HEIGHT = 20;
     };
+    struct Bullet{
+        int posX;
+        int posY;
+
+        enum Direction { UP, DOWN, LEFT, RIGHT } direction;
+    };
+
+    struct BulletManager{
+        std::vector<Bullet> bullets;
+    };
+
+    struct Size_Bullets{
+        int size = 0
+    };
 
 public:
     Server();
@@ -65,7 +79,9 @@ public:
     int listen_server();
     int accept_clients(int& socket_client, sockaddr_in& addr_client);
     int send_client(int& socket_client, struct Server::Player& command);
+    int send_client(int& socket_client, struct Server::BulletManager& command);
     int recv_client(int& socket_client, struct Server::Player& command);
+    int recv_client(int& socket_client, struct Server::Bullet& command);
 
     void close_all();
 };
