@@ -22,15 +22,17 @@ class Client
     sockaddr_in addr_server;
 
 public:
+
     // Структура команды, можно расширить при необходимости
     struct Command{
         int command_type = 0;
     };
+
+    // Структура для отправки размера массива пуль
     struct Size_Bullets{
         int size = 0;
     };
 
-public:
     // Конструктор
     Client();
 

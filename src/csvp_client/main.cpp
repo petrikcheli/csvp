@@ -8,6 +8,67 @@
 
 using namespace std;
 
+int initialization_players(Client* client, Game::Player& player, Game::Player& enemy){
+    //принимаем первоначальные координаты player
+    if(client->recv_command(player) < 0){
+        delete client;
+        return -1;
+    }
+
+    //принимаем первоначальные координаты противника
+    if(client->recv_command(enemy) < 0){
+        delete client;
+        return -1;
+    }
+
+    return 0;
+}
+
+int send_player_data(Client* client, Game::Player& player, Game::BulletManager playerBullet){
+    //отправляем свои координаты, чтобы сервер их передал противнику
+    if(client->send_command(player) < 0){
+        delete client;
+        return -1;
+
+    }
+    // отправляем массив своих пуль
+    if(client->send_command(playerBullet) < 0){
+        delete client;
+        return -1;
+
+    }
+    return 0;
+}
+
+int recv_enemy_data(Client* client, Game::Player& enemy, Game::BulletManager& enemyBullet){
+
+    // после того как мы запомнили прошлые координаты, можно принять новые
+    if(client->recv_command(enemy) < 0){
+        delete client;
+        return -1;
+    }
+
+    // принимаем массив пуль от противника
+    if(client->recv_command(enemyBullet) < 0){
+        delete client;
+        return -1;
+    }
+
+    return 0;
+}
+
+void update_map(Game& game, Game::Map& map, Game::Player& player, Game::Player& enemy,
+                Game::BulletManager& playerBullet, Game::BulletManager& enemyBullet,
+                int oldX, int oldY, int oldEnemyX, int oldEnemyY){
+    game.updateBullets(map, playerBullet);
+    game.updateBullets(map, enemyBullet);
+    map.updateMap(player, oldX, oldY);
+    map.updateMap(enemy, oldEnemyX, oldEnemyY);
+
+    game.endGame(enemy, playerBullet);
+    game.endGame(player, enemyBullet);
+}
+
 int main()
 {
     // Создаем объекты игры, игрока, карты и противника
@@ -47,20 +108,10 @@ int main()
     //подключаемся к серверу
     if(client->connect_to_server()< 0){
         delete client;
-        system("pause");
         exit(1);
     }
 
-    //принимаем первоначальные координаты player
-    if(client->recv_command(player) < 0){
-        delete client;
-        system("pause");
-        return -1;
-    }
-
-    //принимаем первоначальные координаты противника
-    if(client->recv_command(enemy) < 0){
-        delete client;
+    if(initialization_players(client, player, enemy) < 0){
         system("pause");
         return -1;
     }
@@ -70,19 +121,10 @@ int main()
     // Главный игровой цикл
     while(game.isRunning){
         
-        //отправляем свои координаты, чтобы сервер их передал противнику
-        if(client->send_command(player) < 0){
-            delete client;
+        // Принимаем данные на сервер
+        if(send_player_data(client, player, playerBullet)){
             system("pause");
             return -1;
-
-        }
-        // отправляем массив своих пуль
-        if(client->send_command(playerBullet) < 0){
-            delete client;
-            system("pause");
-            return -1;
-
         }
 
         // Сохраняем старые координаты игрока и противника для последующего обновления карты
@@ -98,28 +140,17 @@ int main()
         // Перемещаем курсор в начало консоли для перерисовки карты
         map.setCursor(0, 0);
 
-        // после того как мы запомнили прошлые координаты, можно принять новые
-        if(client->recv_command(enemy) < 0){
-            delete client;
-            system("pause");
-            return -1;
-        }
-
-        // принимаем массив пуль от противника
-        if(client->recv_command(enemyBullet) < 0){
-            delete client;
+        // Принимаем данные на сервер
+        if(recv_enemy_data(client, enemy, enemyBullet) < 0){
             system("pause");
             return -1;
         }
 
         // Обновляем карту с новыми позициями игрока и противника
-        game.updateBullets(map, playerBullet);
-        game.updateBullets(map, enemyBullet);
-        map.updateMap(player, oldX, oldY);
-        map.updateMap(enemy, oldEnemyX, oldEnemyY);
+        update_map(game, map, player,
+                   enemy, playerBullet, enemyBullet,
+                   oldX, oldY, oldEnemyX, oldEnemyY);
 
-        game.endGame(enemy, playerBullet);
-        game.endGame(player, enemyBullet);
         // Отображаем карту на экране
         map.display();
 

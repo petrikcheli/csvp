@@ -1,4 +1,4 @@
-#include"game.h"
+﻿#include"game.h"
 
 void Game::Map::setCursor(int x, int y){
     COORD pos {static_cast<SHORT>(x), static_cast<SHORT>(y)};

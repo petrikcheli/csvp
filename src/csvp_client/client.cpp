@@ -18,12 +18,12 @@ int Client::start_client()
 
     // Проверка успешности создания сокета
     if(socket_server == INVALID_SOCKET){
-        std::cout << "Failed create socket" << std::endl;
+        std::cerr << "Failed create socket" << std::endl;
         closesocket(socket_server); // Закрытие сокета при ошибке
         WSACleanup(); // Освобождение ресурсов Windows Sockets
         return -1;
     } else {
-        std::cout << "Managed to create socket" << std::endl;
+        std::cerr << "Managed to create socket" << std::endl;
     }
 
     // Настройка параметров сервера
@@ -47,7 +47,7 @@ int Client::start_client()
 // Метод для подключения к серверу
 int Client::connect_to_server(){
     if(connect(socket_server, (struct sockaddr *)&addr_server, sizeof(addr_server))<0){
-        std::cout << "Error connect to server" << std::endl;
+        std::cerr << "Error connect to server" << std::endl;
         return -1;
     }
 
@@ -65,13 +65,16 @@ int Client::send_command(struct Game::Player& command){
 
 // Метод для отправки массива пуль героя
 int Client::send_command(struct Game::BulletManager& command){
+
+    // Сначала отправляем размер массива
     Size_Bullets size;
     size.size = command.bullets.size();
     if(send(socket_server, (char *)&size.size, sizeof(int), 0) < 0){
-        std::cout << "Failed to send sizeof to client" << std::endl;
+        std::cerr << "Failed to send sizeof to client" << std::endl;
         return -1;
     }
 
+    // Поочередно отправляем массив пуль
     for(int i = 0; i < size.size; i++){
         if(send(socket_server, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
             std::cerr << "Failed to send bullet with index " << i << std::endl;
@@ -93,13 +96,17 @@ int Client::recv_command(struct Game::Player& command){
 
 // Метод для получения массива пуль противника
 int Client::recv_command(struct Game::BulletManager& command){
+    // Сначала получаем размер массива пуль
     Size_Bullets size;
     if(recv(socket_server, (char *)&size, sizeof(size), 0) < 0){
-        std::cout << "Failed to receive sizeof from client" << std::endl;
+        std::cerr << "Failed to receive sizeof from client" << std::endl;
         return -1;
     }
 
+    // Меняем размер массива
     command.bullets.resize(size.size);
+
+    // Поочередно получаем пули и записываем их в массив
     for(int i = 0; i < size.size; i++){
         if(recv(socket_server, (char *)&command.bullets[i], sizeof(struct Game::Bullet), 0) < 0){
             std::cerr << "Failed to receive bullet with index " << i << std::endl;
