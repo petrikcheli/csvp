@@ -7,10 +7,11 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
+#include "../game_logic/game.h"
 
 class Server
 {
-    int PORT_SERVER = 8080;
+    int PORT_SERVER = 8000;
     const char* IP_SERVER = "217.144.103.236";
 
     sockaddr_in addr_server;
@@ -78,10 +79,10 @@ public:
     int start_server();
     int listen_server();
     int accept_clients(int& socket_client, sockaddr_in& addr_client);
-    int send_client(int& socket_client, struct Server::Player& command);
-    int send_client(int& socket_client, struct Server::BulletManager& command);
-    int recv_client(int& socket_client, struct Server::Player& command);
-    int recv_client(int& socket_client, struct Server::BulletManager& command);
+    int send_client(int& socket_client, struct Game::Player& command);
+    int send_client(int& socket_client, struct Game::BulletManager& command);
+    int recv_client(int& socket_client, struct Game::Player& command);
+    int recv_client(int& socket_client, struct Game::BulletManager& command);
 
     void close_all();
 };
