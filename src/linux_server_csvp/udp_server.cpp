@@ -2,7 +2,7 @@
 
 Udp_server::Udp_server(io_service& service) : _socket(service, _ep_server)
 {
-    accept_clients();
+    this->accept_clients();
 }
 
 void Udp_server::accept_clients()
@@ -13,15 +13,15 @@ void Udp_server::accept_clients()
     memcpy(&ready, _buff, bytes);
     if(_error_recv || ready == false) this->accept_clients();
 
-    std::string message_wait = "Please wait second player";
-    _socket.send_to(buffer(message_wait), client1);
+    //std::string message_wait = "Please wait second player";
+    //_socket.send_to(buffer(message_wait), client1);
 
     ready = false;
     bytes = 0;
     while(true){
         bytes = _socket.receive_from(buffer(_buff), client2, 0, _error_recv);
         memcpy(&ready, _buff, bytes);
-        if(!_error_recv && ready == true) break;
+        if(ready) break;
     }
 }
 

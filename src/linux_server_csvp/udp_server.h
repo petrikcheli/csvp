@@ -42,6 +42,6 @@ private:
     boost::system::error_code _error_recv;
     boost::system::error_code _error_send;
 
-    char* _buff[1024];
+    char _buff[4096];
 };
 
