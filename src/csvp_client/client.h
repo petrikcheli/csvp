@@ -1,6 +1,4 @@
-﻿#ifndef CLIENT_H
-#define CLIENT_H
-
+﻿#pragma once
 #include <iostream>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
@@ -61,4 +59,4 @@ public:
     void close_socket();
 };
 
-#endif // CLIENT_H
+

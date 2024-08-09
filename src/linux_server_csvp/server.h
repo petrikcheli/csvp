@@ -1,21 +1,20 @@
-#ifndef SERVER_H
+﻿#ifndef SERVER_H
 #define SERVER_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <boost/asio.hpp>
 #include <unistd.h>
 #include <vector>
 #include <string>
 #include "../game_logic/game.h"
+
+using namespace boost::asio;
 
 class Server
 {
     int PORT_SERVER = 8000;
     const char* IP_SERVER = "217.144.103.236";
 
-    sockaddr_in addr_server;
-    int socket_server;
+    ip::udp::endpoint _ep_server();
 
 public:
     sockaddr_in addr_client1;

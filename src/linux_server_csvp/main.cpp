@@ -1,10 +1,7 @@
-#include <iostream>
+﻿#include <iostream>
 #include "server.h"
-#include <sys/socket.h> // сокеты
-#include <netinet/in.h> // константы для работы с портами и ip и структура
-#include <arpa/inet.h> // ip address, его нужно чтобы передать в строке ip
-#include <unistd.h> // закрыть порты
-#include <thread>
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
 
 using namespace std;
 
@@ -98,10 +95,15 @@ void work_client(Server* server, int socket_client1, int socket_client2,
     }
 }
 
+
 int main()
 {
     // устанавливаем русский язык
     setlocale(LC_ALL, "Russian");
+
+    io_service service;
+
+    boost::system::error_code er;
 
     // создаем объект класса Server
     Server* server = new Server();
@@ -148,23 +150,6 @@ int main()
         system("pause");
         return -1;
     }
-
-    //создаем второй поток
-    // std::thread client1(work_client, server, server->socket_client1, server->socket_client2, data_player1, data_player2);
-    // client1.detach();
-
-    // //создаем третий поток
-    // std::thread client2(work_client, server, server->socket_client2, server->socket_client1, data_player2, data_player1);
-    // client2.detach();
-    // std::thread client1(work_client, server, server->socket_client1, server->socket_client2, data_player1, data_player2);
-    // client1.detach();
-
-    // //создаем третий поток
-    // std::thread client2(work_client, server, server->socket_client2, server->socket_client1, data_player2, data_player1);
-    // client2.detach();
-
-    //так как остался самый первый поток, то я его увожу в бесконечный цикл
-
 
     while(true){
         work_client(server, server->socket_client1, server->socket_client2, data_player1, data_player2, bullets_player1, bullets_player2);
