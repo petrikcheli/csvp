@@ -1,0 +1,3 @@
+/home/macpetricheli/csvp/src/csvp_server/build/Desktop_Qt_6_7_2-Debug/CMakeFiles/csvp_server.dir
+/home/macpetricheli/csvp/src/csvp_server/build/Desktop_Qt_6_7_2-Debug/CMakeFiles/edit_cache.dir
+/home/macpetricheli/csvp/src/csvp_server/build/Desktop_Qt_6_7_2-Debug/CMakeFiles/rebuild_cache.dir

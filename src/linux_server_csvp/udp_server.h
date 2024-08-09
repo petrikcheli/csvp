@@ -15,10 +15,10 @@ public:
     void start_server();
 
     void accept_clients();
-    void send_client(ip::udp::endpoint client, struct Game::Player& command);
-    void send_client(ip::udp::endpoint client, struct Game::BulletManager& command);
-    void recv_client(ip::udp::endpoint client, struct Game::Player& command);
-    void recv_client(ip::udp::endpoint client, struct Game::BulletManager& command);
+    void send_coords(ip::udp::endpoint client, struct Game::Player& command);
+    void send_bullets(ip::udp::endpoint client, struct Game::BulletManager& command);
+    void recv_coords(ip::udp::endpoint client, struct Game::Player& command);
+    void recv_bullets(ip::udp::endpoint client, struct Game::BulletManager& command);
 
     void send_first_coordinate(Game::Player &player1, Game::Player &player2);
 
@@ -36,7 +36,8 @@ public:
 
 private:
     //ip::udp::endpoint _ep_server{ip::address::from_string("217.144.103.236"), 8000};
-    ip::udp::endpoint _ep_server{ip::address::from_string("127.0.0.1"), 8000};
+    //ip::udp::endpoint _ep_server{ip::address::from_string("127.0.0.1"), 8000};
+    ip::udp::endpoint _ep_server{ip::address::from_string("192.168.0.190"), 8000};
     ip::udp::socket _socket;
 
     boost::system::error_code _error_recv;

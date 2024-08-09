@@ -2,7 +2,7 @@
 #define GAME_H
 #include<iostream>
 #include<vector>
-#include<Windows.h>
+//#include<Windows.h>
 
 class Game{
 public:
@@ -11,8 +11,8 @@ public:
     // #define VK_S 0x53
     // #define VK_D 0x44
 
-    __UINT32_TYPE__ lastShotTime = 0;
-    const __UINT32_TYPE__ shootInterval = 500; //расчёт в милисекундах
+    // __UINT32_TYPE__ lastShotTime = 0;
+    //const __UINT32_TYPE__ shootInterval = 500; //расчёт в милисекундах
 
     bool isRunning = true;
     struct Player{
