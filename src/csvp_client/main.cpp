@@ -24,7 +24,7 @@ int initialization_players(Client* client, Game::Player& player, Game::Player& e
     return 0;
 }
 
-int send_player_data(Client* client, Game::Player& player, Game::BulletManager playerBullet){
+int send_player_data(Client* client, Game::Player& player, Game::BulletManager& playerBullet){
     //отправляем свои координаты, чтобы сервер их передал противнику
     if(client->send_command(player) < 0){
         delete client;

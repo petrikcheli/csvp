@@ -14,16 +14,16 @@ public:
     void start_client();
 
     // Метод для отправки команды серверу
-    void send_command(Game::Player& command);
+    void send_coords(Game::Player& command);
 
     // Метод для отправки команды серверу
-    void send_command(Game::BulletManager& command);
+    void send_bullets(Game::BulletManager& command);
 
     // Метод для получения команды от сервера
-    void recv_command(Game::Player& command);
+    void recv_coords(Game::Player& command);
 
     // Метод для получения команды от сервера
-    void recv_command(Game::BulletManager& command);
+    void recv_bullets(Game::BulletManager& command);
 
     void initialization_players(Game::Player& coord, Game::Player& bul);
 
@@ -37,7 +37,8 @@ public:
 private:
     char _buff[4096];
 
-    ip::udp::endpoint _ep_server{ip::address::from_string("127.0.0.1"), 8000};
+    ip::udp::endpoint _ep_server{ip::address::from_string("192.168.0.187"), 8000};
+    //ip::udp::endpoint _ep_server{ip::address::from_string("127.0.0.1"), 8000};
     ip::udp::endpoint _ep_client{ip::udp::endpoint(ip::udp::v4(), 0)};
 
     ip::udp::socket _socket;

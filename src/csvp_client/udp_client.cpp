@@ -14,64 +14,87 @@ void Udp_client::start_client()
     if(_error_send) std::cerr << "error - " << _error_send;
 }
 
-void Udp_client::send_command(Game::Player &command)
+void Udp_client::send_coords(Game::Player& command)
 {
-    _socket.send_to(buffer((char*)&command, sizeof(command)), _ep_server, 0, _error_send);
+    std::cerr << " send coords " << std::endl;
+    size_t s = sizeof(command);
+    _socket.send_to(buffer((char*)&command, s), _ep_server, 0, _error_send);
     if(_error_send) std::cerr << "error - " << _error_send;
 }
 
-void Udp_client::send_command(Game::BulletManager &command)
+void Udp_client::send_bullets(Game::BulletManager& command)
 {
-    _socket.send_to(buffer((char*)&command, sizeof(command)), _ep_server, 0, _error_send);
+    std::cerr << " send size bullets " << std::endl;
+    int size_bullets = command.bullets.size();
+    _socket.send_to(buffer((char*)&size_bullets, sizeof(size_bullets)), _ep_server, 0, _error_send);
     if(_error_send) std::cerr << "error - " << _error_send;
+
+    if(size_bullets == 0) return;
+
+    _socket.send_to(buffer((char*)&command.bullets, sizeof(command.bullets)), _ep_server, 0, _error_send);
+    if(_error_send)
+        std::cerr << "error - " << _error_send;
+
+    std::cerr << " send bullets "<<std::endl;
+    //прошлый код который передава данные через цикл
+//    for(int i = 0; i < size_bullets; ++i){
+//        _socket.send_to(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_server, 0, _error_send);
+//        if(_error_send) std::cerr << "error - " << _error_send;
+//    }
 }
 
-void Udp_client::recv_command(Game::Player &command)
+void Udp_client::recv_coords(Game::Player &command)
 {
-    int bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
+    std::cerr << " recv coords " << std::endl;
+    size_t bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
+    if(_error_recv) std::cerr << "error - " << _error_recv;
     memcpy(&command, _buff, bytes);
-    if(_error_recv) std::cerr << "error - " << _error_recv;
 }
 
-void Udp_client::recv_command(Game::BulletManager &command)
+void Udp_client::recv_bullets(Game::BulletManager &command)
 {
+    std::cerr << "recv size bullets" << std::endl;
+    int size_bullets = 0;
+
     int bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
-    memcpy(&command, _buff, bytes);
+    memcpy(&size_bullets, _buff, sizeof(int));
     if(_error_recv) std::cerr << "error - " << _error_recv;
+
+    if(size_bullets == 0) return;
+    command.bullets.resize(size_bullets);
+
+    bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
+
+    if(_error_recv)
+        std::cerr << "error - " << _error_recv;
+    memcpy(&command.bullets, _buff, bytes);
+    std::cerr << " recv bullets " << std::endl;
+//прошлый код который передава данные через цикл
+//    for(int i = 0; i < size_bullets; ++i){
+//        //bytes = _socket.receive_from(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_client, 0, _error_recv);
+//        bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
+//        if(_error_recv) std::cerr << "error - " << _error_recv;
+//        memcpy(&command.bullets[i], _buff, bytes);
+//    }
 }
 
-void Udp_client::initialization_players(Game::Player &coord_player, Game::Player &coord_enemy)
+void Udp_client:: initialization_players(Game::Player& coord_player, Game::Player& coord_enemy)
 {
-    int bytes = 0;
-    bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
-    memcpy(&coord_player, _buff, bytes);
-    if(_error_recv) std::cerr << "error - " << _error_recv;
-
-
-    bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
-    memcpy(&coord_enemy, _buff, bytes);
-    if(_error_recv) std::cerr << "error - " << _error_recv;
+    this->recv_coords(coord_player);
+    this->recv_coords(coord_enemy);
 }
 
-void Udp_client::send_data_player(Game::Player &coord, Game::BulletManager &bul)
+void Udp_client::send_data_player(Game::Player& coord, Game::BulletManager& bul)
 {
-    _socket.send_to(buffer((char*)&coord, sizeof(coord)), _ep_server, 0, _error_send);
-    if(_error_send) std::cerr << "error - " << _error_send;
-
-    _socket.send_to(buffer((char*)&bul, sizeof(bul)), _ep_server, 0, _error_send);
-    if(_error_send) std::cerr << "error - " << _error_send;
+    this->send_coords(coord);
+    this->send_bullets(bul);
 }
 
-void Udp_client::recv_data_enemy(Game::Player &coord, Game::BulletManager &bul)
+void Udp_client::recv_data_enemy(Game::Player& coord, Game::BulletManager& bul)
 {
-    int bytes = 0;
-    bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
-    memcpy(&coord, _buff, bytes);
-    if(_error_recv) std::cerr << "error - " << _error_recv;
 
-    bytes = _socket.receive_from(buffer(_buff), _ep_client, 0, _error_recv);
-    memcpy(&bul, _buff, bytes);
-    if(_error_recv) std::cerr << "error - " << _error_recv;
+    this->recv_coords(coord);
+    this->recv_bullets(bul);
 }
 
 
