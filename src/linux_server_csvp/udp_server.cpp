@@ -40,25 +40,30 @@ void Udp_server::send_bullets(ip::udp::endpoint& client, Game::BulletManager& co
     std::cerr << " send size bullets " << std::endl;
     if(size_bullets == 0) return;
 
-    _socket.send_to(buffer((char*)&command.bullets, sizeof(command.bullets)), client, 0, _error_send);
-    //client.send(buffer((char*)&command.bullets, sizeof(command.bullets)));
-    if(_error_send)
-        std::cerr << " error(45) - " << _error_send;
+//    _socket.send_to(buffer((char*)&command.bullets, sizeof(command.bullets)), client, 0, _error_send);
+//    //client.send(buffer((char*)&command.bullets, sizeof(command.bullets)));
+//    if(_error_send)
+//        std::cerr << " error(45) - " << _error_send;
     std::cerr << " send_bullets ";
     //прошлый код который передава данные через цикл
-//    for(int i = 0; i < size_bullets; ++i){
-//        _socket.send_to(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), client, 0, _error_send);
-//        if(_error_send)
-//            std::cerr << " error(45) - " << _error_send;
-//    }
+    for(int i = 0; i < size_bullets; ++i){
+        _socket.send_to(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), client, 0, _error_send);
+        if(_error_send)
+            std::cerr << " error(45) - " << _error_send;
+    }
 }
 
-void Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
+int Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
                              Game::BulletManager &bul1, Game::BulletManager &bul2)
 {
     int size_bullets;
     size_t bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
     if(_error_recv) std::cerr << " error(53) - " << _error_recv;
+
+    if(bytes == 1 || !game_is_active){
+        this->game_is_active = false;
+        return 1;
+    }
 
     if(_ep_recv == client1){
         if(bytes > 4)
@@ -67,33 +72,39 @@ void Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
             memcpy(&size_bullets, _buff, bytes);
             std::cerr << " recv size bullets " << std::endl;
 
-            if(size_bullets == 0) return;
+            if(size_bullets == 0) return 0;
 
             bul1.bullets.resize(size_bullets);
-            bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
-            if(_error_recv) std::cerr << " error(68) - " << _error_recv;
-            memcpy(&bul1.bullets, _buff, bytes);
-            std::cerr << " recv bullets " << std::endl;
+
+            for(int i = 0; i < size_bullets; ++i){
+                //bytes = _socket.receive_from(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_client, 0, _error_recv);
+                bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
+                if(_error_recv) std::cerr << "error - " << _error_recv;
+                memcpy(&bul1.bullets[i], _buff, bytes);
+            }
         }
     } else {
         if(bytes > 4)
             memcpy(&coord2, _buff, bytes);
         else{
             memcpy(&size_bullets, _buff, bytes);
-                    std::cerr << " recv size bullets " << std::endl;
+            std::cerr << " recv size bullets " << std::endl;
 
-                    if(size_bullets == 0) return;
+            if(size_bullets == 0) return 0;
 
-                    bul2.bullets.resize(size_bullets);
-                    bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
-                    if(_error_recv) std::cerr << " error(68) - " << _error_recv;
-                    memcpy(&bul2.bullets, _buff, bytes);
-                    std::cerr << " recv bullets " << std::endl;
+            bul2.bullets.resize(size_bullets);
+
+            for(int i = 0; i < size_bullets; ++i){
+                //bytes = _socket.receive_from(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_client, 0, _error_recv);
+                bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
+                if(_error_recv) std::cerr << "error - " << _error_recv;
+                memcpy(&bul2.bullets[i], _buff, bytes);
+            }
         }
     }
 
 
-
+    return 0;
     std::cerr << " recv coords " << std::endl;
 }
 

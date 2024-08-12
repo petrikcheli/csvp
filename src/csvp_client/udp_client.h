@@ -31,6 +31,8 @@ public:
 
     void recv_data_enemy(Game::Player& coord, Game::BulletManager& bul);
 
+    void send_end_game();
+
     // Метод для закрытия сокета
     void close_socket();
 

@@ -18,7 +18,7 @@ public:
     void accept_clients();
     void send_coords(ip::udp::endpoint& client, struct Game::Player& command);
     void send_bullets(ip::udp::endpoint& client, struct Game::BulletManager& command);
-    void recv_coords(Game::Player& coord1, Game::Player& coord2,
+    int recv_coords(Game::Player& coord1, Game::Player& coord2,
                      Game::BulletManager &bul1, Game::BulletManager &bul2);
     void recv_bullets(ip::udp::endpoint& client, struct Game::BulletManager& command);
 
@@ -36,6 +36,7 @@ public:
 public:
     ip::udp::endpoint client1;
     ip::udp::endpoint client2;
+    bool game_is_active = true;
 
 private:
     //ip::udp::endpoint _ep_server{ip::address::from_string("217.144.103.236"), 8000};

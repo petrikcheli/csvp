@@ -18,7 +18,10 @@ void update_map(Game& game, Game::Map& map, Game::Player& player, Game::Player& 
     map.updateMap(enemy, oldEnemyX, oldEnemyY);
 
     game.endGame(enemy, playerBullet);
+    if(!game.isRunning) std::cout << "You WIN!!!!" << std::endl;
+    return;
     game.endGame(player, enemyBullet);
+    if(!game.isRunning) std::cout << "You lost" << std::endl;
 }
 
 int main(){
@@ -36,14 +39,14 @@ int main(){
     // Устанавливаем локализацию на русский язык для вывода в консоль
     setlocale(LC_ALL, "Rus");
 
-    Udp_client client = service;
+    Udp_client* client = new Udp_client(service);
 
-    client.initialization_players(player, enemy);
+    client->initialization_players(player, enemy);
 
     while(game.isRunning){
 
         // отправляем данные на сервер
-        client.send_data_player(player, playerBullet);
+        client->send_data_player(player, playerBullet);
 
         // Сохраняем старые координаты игрока и противника для последующего обновления карты
         int oldX = player.posX;
@@ -59,7 +62,7 @@ int main(){
         map.setCursor(0, 0);
 
         // Принимаем данные на сервер
-        client.recv_data_enemy(enemy, enemyBullet);
+        client->recv_data_enemy(enemy, enemyBullet);
 
         // Обновляем карту с новыми позициями игрока и противника
         update_map(game, map, player,
@@ -72,6 +75,10 @@ int main(){
         // Задержка для плавности анимации
         Sleep(100);
     }
+
+    client->send_end_game();
+
+    system("pause");
 
     // Освобождаем память и закрываем соединение
     //delete client;

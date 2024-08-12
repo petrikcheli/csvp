@@ -7,8 +7,6 @@
 using namespace std;
 using namespace boost::asio;
 
-bool g_game_is_active = true;
-
 int main(){
     io_service service;
 
@@ -42,19 +40,17 @@ int main(){
 
     server->send_first_coordinate(server->client1, server->client2, data_player1, data_player2);
 
-    while(g_game_is_active){
-        //server->recv_data_player(server->client1, data_player1, bullets_player1);
-        //server->recv_data_player(server->client2, data_player2, bullets_player2);
-        server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2);
-        server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2);
-        server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2);
-        server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2);
+    while(server->game_is_active){
+        if(server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2)) break;
+        if(server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2)) break;
+        if(server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2)) break;
+        if(server->recv_coords(data_player1, data_player2, bullets_player1, bullets_player2)) break;
 
         server->send_data_player(server->client1, data_player2, bullets_player2);
         server->send_data_player(server->client2, data_player1, bullets_player1);
     }
 
-    service.run();
+    delete server;
 
     goto start;
 
