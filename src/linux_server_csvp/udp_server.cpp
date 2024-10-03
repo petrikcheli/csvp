@@ -1,7 +1,10 @@
 ﻿#include "udp_server.h"
+#include <iostream>
 
-Udp_server::Udp_server(io_service& service) : _socket(service, _ep_server)
+Udp_server::Udp_server(io_service& service, std::string ip, unsigned short port)
+    : _socket(service, _ep_server)
 {
+    _ep_server={ip::address::from_string(ip), port};
     this->accept_clients();
 }
 
@@ -66,10 +69,19 @@ int Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
     }
 
     if(_ep_recv == client1){
-        if(bytes > 4)
-            memcpy(&coord1, _buff, bytes);
+        if(bytes > 4){
+            try {
+                throw memcpy(&coord1, _buff, bytes);
+            } catch(const std::exception& e) {
+                std::cerr << e.what() << std::endl;
+            }
+        }
         else {
-            memcpy(&size_bullets, _buff, bytes);
+            try {
+                throw memcpy(&size_bullets, _buff, bytes);
+            } catch(const std::exception& e) {
+                std::cerr << e.what() << std::endl;
+            }
             std::cerr << " recv size bullets " << std::endl;
 
             if(size_bullets == 0) return 0;
@@ -80,14 +92,27 @@ int Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
                 //bytes = _socket.receive_from(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_client, 0, _error_recv);
                 bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
                 if(_error_recv) std::cerr << "error - " << _error_recv;
-                memcpy(&bul1.bullets[i], _buff, bytes);
+                try {
+                    throw memcpy(&bul1.bullets[i], _buff, bytes);
+                } catch(const std::exception& e) {
+                    std::cerr << e.what() << std::endl;
+                }
             }
         }
     } else {
-        if(bytes > 4)
-            memcpy(&coord2, _buff, bytes);
+        if(bytes > 4){
+            try {
+                throw memcpy(&coord2, _buff, bytes);
+            } catch(const std::exception& e) {
+                std::cerr << e.what() << std::endl;
+            }
+        }
         else{
-            memcpy(&size_bullets, _buff, bytes);
+            try {
+                throw memcpy(&size_bullets, _buff, bytes);
+            } catch(const std::exception& e) {
+                std::cerr << e.what() << std::endl;
+            }
             std::cerr << " recv size bullets " << std::endl;
 
             if(size_bullets == 0) return 0;
@@ -98,7 +123,11 @@ int Udp_server::recv_coords(Game::Player& coord1, Game::Player& coord2,
                 //bytes = _socket.receive_from(buffer((char*)&command.bullets[i], sizeof(command.bullets[i])), _ep_client, 0, _error_recv);
                 bytes = _socket.receive_from(buffer(_buff), _ep_recv, 0, _error_recv);
                 if(_error_recv) std::cerr << "error - " << _error_recv;
-                memcpy(&bul2.bullets[i], _buff, bytes);
+                try {
+                    throw memcpy(&bul2.bullets[i], _buff, bytes);
+                } catch(const std::exception& e) {
+                    std::cerr << e.what() << std::endl;
+                }
             }
         }
     }
@@ -116,7 +145,11 @@ void Udp_server::recv_bullets(ip::udp::endpoint& client, Game::BulletManager &co
     if(bytes > 4) return;
 
     if(_error_recv) std::cerr << " error(61) - " << _error_recv;
-    memcpy(&size_bullets, _buff, bytes);
+    try {
+        throw memcpy(&size_bullets, _buff, bytes);
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
     std::cerr << " recv size bullets " << std::endl;
 
     if(size_bullets == 0) return;
@@ -125,7 +158,11 @@ void Udp_server::recv_bullets(ip::udp::endpoint& client, Game::BulletManager &co
     bytes = _socket.receive_from(buffer(_buff), client, 0, _error_recv);
     //bytes = client.receive(buffer(_buff));
     if(_error_recv) std::cerr << " error(68) - " << _error_recv;
-    memcpy(&command.bullets, _buff, bytes);
+    try {
+        throw memcpy(&command.bullets, _buff, bytes);
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
     std::cerr << " recv bullets " << std::endl;
 }
 

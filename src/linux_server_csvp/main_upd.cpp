@@ -2,7 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include "udp_server.h"
-#include <windows.h>
+//#include <windows.h>
 
 using namespace std;
 using namespace boost::asio;
@@ -12,14 +12,19 @@ int main(){
 
     setlocale(LC_ALL, "rus");
 
+    std::string ip;
+    unsigned short port;
 
-
+    std::cout << "ip - " << std::endl;
+    std::cin >> ip;
+    std::cout << "port" << std::endl;
+    std::cin >> port;
     //когда игра прекратится server снова начнет ждать новых клиентов
     start:
     //ip::udp::endpoint client1;
     //ip::udp::endpoint client2;
 
-    Udp_server* server = new Udp_server(service);
+    Udp_server* server = new Udp_server(service, ip, port);
 
     // map, data_player1, data_player2
     //нужны для того чтобы отсылать/принимать

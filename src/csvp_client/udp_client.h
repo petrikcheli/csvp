@@ -9,7 +9,7 @@ class Udp_client
     Udp_client();
 public:
 
-    Udp_client(io_service& service);
+    Udp_client(io_service& service, std::string ip, unsigned short port);
     // Метод для инициализации клиента
     void start_client();
 
@@ -39,7 +39,7 @@ public:
 private:
     char _buff[4096];
 
-    ip::udp::endpoint _ep_server{ip::address::from_string("192.168.0.187"), 8000};
+    ip::udp::endpoint _ep_server;//{ip::address::from_string("192.168.0.187"), 8000};
     //ip::udp::endpoint _ep_server{ip::address::from_string("127.0.0.1"), 8000};
     ip::udp::endpoint _ep_client{ip::udp::endpoint(ip::udp::v4(), 0)};
 

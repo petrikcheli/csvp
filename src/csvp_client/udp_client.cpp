@@ -1,8 +1,9 @@
 ﻿#include "udp_client.h"
 
-Udp_client::Udp_client(io_service& service)
+Udp_client::Udp_client(io_service& service, std::string ip, unsigned short port)
     : _socket(service, _ep_client)
 {
+    _ep_server={ip::address::from_string(ip), port};
     this->start_client();
 }
 

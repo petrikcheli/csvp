@@ -39,7 +39,15 @@ int main(){
     // Устанавливаем локализацию на русский язык для вывода в консоль
     setlocale(LC_ALL, "Rus");
 
-    Udp_client* client = new Udp_client(service);
+    std::string ip;
+    unsigned short port;
+
+    std::cout << "ip - " << std::endl;
+    std::cin >> ip;
+    std::cout << "port" << std::endl;
+    std::cin >> port;
+
+    Udp_client* client = new Udp_client(service, ip, port);
 
     client->initialization_players(player, enemy);
 
